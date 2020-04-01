@@ -4,7 +4,6 @@ import android.bluetooth.*
 import android.bluetooth.le.BluetoothLeScanner
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import co.cosmose.m5stickwidget.M5WidgetApplication
@@ -31,11 +30,20 @@ class BLEViewModel @Inject constructor(
     enum class DeviceStatus {
         CONNECTING,
         CONNECTED,
+        NOTIFICATIONS_SET,
         DISCONNECTED,
         FAILED
     }
 
+    enum class WriteStatus {
+        DATA_WRITTEN,
+        DEVICE_ACCEPTED,
+        FAILED
+    }
+
     var deviceStatus = MutableLiveData<DeviceStatus>()
+    var writeStatus = MutableLiveData<WriteStatus>()
+    var receivedNewData = MutableLiveData<String>()
 
     fun connectToDevice(name: String? = null, address: String? = null) {
         this.name = name
@@ -50,9 +58,13 @@ class BLEViewModel @Inject constructor(
             ?.getCharacteristic(M5_CHARACTERISTIC_WRITE)
             ?.let { characteristic ->
                 characteristic.setValue(value)
-                connectedDeviceGatt?.writeCharacteristic(characteristic)
-                Log.v("------------", "WRITE OK ${connectedDeviceGatt}")
-            }
+                val result = connectedDeviceGatt?.writeCharacteristic(characteristic)
+                val status = when (result) {
+                    true -> WriteStatus.DATA_WRITTEN
+                    else -> WriteStatus.FAILED
+                }
+                writeStatus.postValue(status)
+            } ?: writeStatus.postValue(WriteStatus.FAILED)
     }
 
     override fun onCleared() {
@@ -98,35 +110,27 @@ class BLEViewModel @Inject constructor(
             super.onServicesDiscovered(gatt, status)
             when (status) {
                 BluetoothGatt.GATT_SUCCESS -> {
-                    enableNotification()
                     deviceStatus.postValue(DeviceStatus.CONNECTED)
+                    enableNotifications()
                 }
                 else -> deviceStatus.postValue(DeviceStatus.FAILED)
             }
         }
 
-        override fun onCharacteristicWrite(
-            gatt: BluetoothGatt?,
-            characteristic: BluetoothGattCharacteristic?,
-            status: Int
-        ) {
+        override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int ) {
             super.onCharacteristicWrite(gatt, characteristic, status)
-            Log.v("------------", "NOTIFY WRITE OK to M5Stick")
+            writeStatus.postValue(WriteStatus.DEVICE_ACCEPTED)
         }
 
-        override fun onCharacteristicChanged(
-            gatt: BluetoothGatt?,
-            characteristic: BluetoothGattCharacteristic?
-        ) {
+        override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
             super.onCharacteristicChanged(gatt, characteristic)
-            Log.v(
-                "------------",
-                "NOTIFY NEW DATA FROM M5Stick '${characteristic?.getStringValue(0)}'"
-            )
+            characteristic?.let { characteristic ->
+                receivedNewData.postValue(characteristic.getStringValue(0))
+            }
         }
     }
 
-    private fun enableNotification() {
+    private fun enableNotifications() {
         connectedDeviceGatt
             ?.getService(M5_SERVICE_UUID)
             ?.getCharacteristic(M5_CHARACTERISTIC_NOTIFY)
@@ -136,7 +140,7 @@ class BLEViewModel @Inject constructor(
                     it.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
                     connectedDeviceGatt?.writeDescriptor(it)
                 }
-                Log.v("------------", "notify OK")
+                deviceStatus.postValue(DeviceStatus.NOTIFICATIONS_SET)
             }
     }
 }

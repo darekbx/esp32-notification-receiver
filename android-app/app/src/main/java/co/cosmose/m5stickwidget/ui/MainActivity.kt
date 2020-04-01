@@ -3,6 +3,7 @@ package co.cosmose.m5stickwidget.ui
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -28,18 +29,22 @@ class MainActivity : AppCompatActivity() {
         (application as M5WidgetApplication).appComponent.inject(this)
 
         bleViewModel = ViewModelProvider(this, viewModelFactory)[BLEViewModel::class.java]
+        bleViewModel.receivedNewData.observe(this@MainActivity, Observer { data ->
+            Log.v("------------", "Received new data: ${data}")
+        })
+        bleViewModel.writeStatus.observe(this@MainActivity, Observer { status ->
+            Log.v("------------", "Write status: ${status.name}")
+        })
         bleViewModel.deviceStatus.observe(this@MainActivity, Observer { status ->
 
-            if (status == BLEViewModel.DeviceStatus.CONNECTED) {
+            Log.v("------------", "Device status; ${status.name}")
 
+            if (status == BLEViewModel.DeviceStatus.NOTIFICATIONS_SET) {
                 test.postDelayed({
-                    bleViewModel.write("Emi")
+                    bleViewModel.write("Test data")
                 }, 1000)
-
             }
-
         })
-
 
         checkBLESupport()
     }

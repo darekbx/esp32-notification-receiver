@@ -34,3 +34,11 @@ void loop() {
   
   delay(150);
 }
+
+void handleInputData(String data) {
+  M5.Lcd.fillRect(0, 18, 80, 160, WHITE);
+  delay(500);
+  M5.Lcd.fillRect(0, 18, 80, 160, BLACK);
+  M5.Lcd.setCursor(1, 20, 1);
+  M5.Lcd.print(data);  
+}

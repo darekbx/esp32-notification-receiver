@@ -1,8 +1,4 @@
 
-#if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
-#error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
-#endif
-
 BLEServer *pServer = NULL;
 BLECharacteristic * pTxCharacteristic;
 bool deviceConnected = false;
@@ -35,6 +31,7 @@ class M5ReceiveCallback: public BLECharacteristicCallbacks {
 
       Serial.println("Received data");
       Serial.println(cstr);
+      handleInputData(cstr);
     }
 };
 
@@ -66,7 +63,7 @@ void initBLE() {
 }
 
 void M5BLEloop() {
-  if (false && deviceConnected) {
+  if (deviceConnected) {
     pTxCharacteristic->setValue("VALUE");
     pTxCharacteristic->notify();
 
