@@ -21,6 +21,10 @@ void setup() {
   initBLE();
   
   pinMode(M5_BUTTON_HOME, INPUT_PULLUP);
+  pinMode(M5_LED, OUTPUT);
+
+  digitalWrite(M5_LED, HIGH);
+  
 
   M5.Axp.ScreenBreath(8);
 }
@@ -36,9 +40,12 @@ void loop() {
 }
 
 void handleInputData(String data) {
-  M5.Lcd.fillRect(0, 18, 80, 160, WHITE);
-  delay(500);
-  M5.Lcd.fillRect(0, 18, 80, 160, BLACK);
+  for (int i = 0; i < 4; i++){
+    digitalWrite(M5_LED, LOW);
+    delay(200);
+    digitalWrite(M5_LED, HIGH);
+    delay(200);
+  }
   M5.Lcd.setCursor(1, 20, 1);
   M5.Lcd.print(data);  
 }
