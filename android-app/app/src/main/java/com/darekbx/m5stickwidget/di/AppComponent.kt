@@ -1,7 +1,7 @@
-package co.cosmose.m5stickwidget.di
+package com.darekbx.m5stickwidget.di
 
-import co.cosmose.m5stickwidget.NotificationService
-import co.cosmose.m5stickwidget.ui.MainActivity
+import com.darekbx.m5stickwidget.NotificationService
+import com.darekbx.m5stickwidget.ui.MainActivity
 import com.rpifilebrowser.di.viewmodels.ViewModelModule
 import dagger.Component
 import javax.inject.Singleton

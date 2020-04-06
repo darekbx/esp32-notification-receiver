@@ -1,4 +1,4 @@
-package co.cosmose.m5stickwidget.utils
+package com.darekbx.m5stickwidget.utils
 
 import android.Manifest
 import android.app.Activity
@@ -22,6 +22,9 @@ class PermissionsHelper {
         .all { ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED }
 
     fun requestPermissions(activity: Activity) {
-        activity.requestPermissions(REQUIRED_PERMISSIONS, PERMISSIONS_REQUEST_CODE)
+        activity.requestPermissions(
+            REQUIRED_PERMISSIONS,
+            PERMISSIONS_REQUEST_CODE
+        )
     }
 }

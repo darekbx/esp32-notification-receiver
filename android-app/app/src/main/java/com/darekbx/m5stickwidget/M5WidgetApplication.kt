@@ -1,9 +1,8 @@
-package co.cosmose.m5stickwidget
+package com.darekbx.m5stickwidget
 
 import android.app.Application
-import co.cosmose.m5stickwidget.di.AppModule
-import co.cosmose.m5stickwidget.di.DaggerAppComponent
-
+import com.darekbx.m5stickwidget.di.AppModule
+import com.darekbx.m5stickwidget.di.DaggerAppComponent
 
 class M5WidgetApplication : Application() {
 

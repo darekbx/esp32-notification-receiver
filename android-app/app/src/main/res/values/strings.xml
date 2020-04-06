@@ -1,5 +1,6 @@
 <resources>
-    <string name="app_name">M5StickWidget</string>
+    <string name="app_name">M5StickC Widget</string>
     <string name="ble_not_supported">Bluetooth LE is not supported for this device.</string>
     <string name="permissions_are_required">Please grant all required permissions.</string>
+    <string name="widget_is_active">M5StickC is connected</string>
 </resources>

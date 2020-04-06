@@ -1,10 +1,10 @@
-package co.cosmose.m5stickwidget.bluetooth
+package com.darekbx.m5stickwidget.bluetooth
 
 import android.bluetooth.*
 import android.bluetooth.le.BluetoothLeScanner
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
-import co.cosmose.m5stickwidget.M5WidgetApplication
+import com.darekbx.m5stickwidget.M5WidgetApplication
 import java.util.*
 
 class BluetoothWrapper(

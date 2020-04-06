@@ -1,4 +1,4 @@
-package co.cosmose.m5stickwidget.ui
+package com.darekbx.m5stickwidget.ui
 
 import android.content.ComponentName
 import android.content.Intent
@@ -10,12 +10,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import co.cosmose.m5stickwidget.M5WidgetApplication
-import co.cosmose.m5stickwidget.NotificationService
-import co.cosmose.m5stickwidget.R
-import co.cosmose.m5stickwidget.bluetooth.BluetoothWrapper
-import co.cosmose.m5stickwidget.utils.PermissionsHelper
-import co.cosmose.m5stickwidget.viewmodel.BLEViewModel
+import com.darekbx.m5stickwidget.M5WidgetApplication
+import com.darekbx.m5stickwidget.NotificationService
+import com.darekbx.m5stickwidget.R
+import com.darekbx.m5stickwidget.utils.PermissionsHelper
+import com.darekbx.m5stickwidget.viewmodel.BLEViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
@@ -60,26 +59,28 @@ class MainActivity : AppCompatActivity() {
         bleViewModel.deviceStatus.observe(this@MainActivity, Observer { status ->
 
             Log.v("------------", "Device status; ${status.name}")
-
-            if (status == BluetoothWrapper.DeviceStatus.NOTIFICATIONS_SET) {
-                test.postDelayed({
-                    bleViewModel.write("Test data")
-                }, 1000)
-            }
         })
+
+        restart.setOnClickListener {
+            sendBroadcast(Intent(NotificationService.ACTION_RESET))
+        }
 
         checkBLESupport()
     }
 
     fun isNotificationPermissionRequired(): Boolean {
         val component = ComponentName(this, NotificationService::class.java)
-        val value = Settings.Secure.getString(this.contentResolver, ENABLED_NOTIFICATION_LISTENERS)
+        val value = Settings.Secure.getString(this.contentResolver,
+            ENABLED_NOTIFICATION_LISTENERS
+        )
         return value?.contains(component.flattenToString())?.not() ?: false
     }
 
     private fun requestNotificationPermission() {
         val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
-        startActivityForResult(intent, NOTIFICATION_PERMISSION_RESULT_CODE)
+        startActivityForResult(intent,
+            NOTIFICATION_PERMISSION_RESULT_CODE
+        )
     }
 
     override fun onResume() {

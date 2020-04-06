@@ -35,8 +35,16 @@ void loop() {
   displayBatteryLevel();
   
   M5BLEloop();
+
+  if (digitalRead(M5_BUTTON_HOME) == LOW) {
+    resetNotification();
+  }
   
   delay(150);
+}
+
+void resetNotification() {
+  M5.Lcd.fillRect(0, batteryLevelOffset, 80, 160, BLACK);
 }
 
 void handleInputData(String data) {

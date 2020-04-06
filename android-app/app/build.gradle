@@ -8,7 +8,7 @@ android {
     buildToolsVersion "29.0.1"
 
     defaultConfig {
-        applicationId "co.cosmose.m5stickwidget"
+        applicationId "com.darekbx.m5stickwidget"
         minSdkVersion 28
         targetSdkVersion 29
         versionCode 1

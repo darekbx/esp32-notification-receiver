@@ -1,8 +1,8 @@
-package co.cosmose.m5stickwidget.viewmodel
+package com.darekbx.m5stickwidget.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import co.cosmose.m5stickwidget.bluetooth.BluetoothWrapper
+import com.darekbx.m5stickwidget.bluetooth.BluetoothWrapper
 import javax.inject.Inject
 
 class BLEViewModel @Inject constructor(
