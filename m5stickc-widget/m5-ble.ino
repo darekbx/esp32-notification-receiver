@@ -64,9 +64,11 @@ void initBLE() {
 
 void M5BLEloop() {
   if (deviceConnected) {
-    pTxCharacteristic->setValue("VALUE");
-    pTxCharacteristic->notify();
-
-    delay(2000); // bluetooth stack will go into congestion, if too many packets are sent
+    // writeValue("Out data");
   }
+}
+
+void writeValue() {
+    pTxCharacteristic->setValue("value");
+    pTxCharacteristic->notify();
 }

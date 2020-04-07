@@ -22,7 +22,7 @@ class NotificationService : NotificationListenerService() {
         val ACTION_RESET = "action_reset"
         val IGNORED_PACKAGES = listOf(
             "com.darekbx.m5stickwidget",
-            "com.android.packageinstaller",
+            "com.google.android.packageinstaller",
             "com.android.providers.downloads",
             "com.brave.browser"
         )
@@ -115,26 +115,15 @@ class NotificationService : NotificationListenerService() {
         val packageName = packangeChunks.lastOrNull()
         packageName?.let { packageName ->
 
-            if (!IGNORED_PACKAGES.contains(packageName)) {
+            Log.v("------------", "packageName: ${statusBarNotification.packageName}")
+            if (!IGNORED_PACKAGES.contains(statusBarNotification.packageName)) {
                 val applicationName = TRANSLATIONS.get(packageName) ?: packageName
 
                 with(statusBarNotification.notification.extras) {
-                    val title = getString(NotificationCompat.EXTRA_TITLE)
-                    val text = getString(NotificationCompat.EXTRA_TEXT)
-                    val subText = getString(NotificationCompat.EXTRA_SUB_TEXT)
+                    val title = getString(NotificationCompat.EXTRA_TITLE) ?: ""
+                    val text = getString(NotificationCompat.EXTRA_TEXT) ?: ""
+                    bluetoothWrapper.write("$applicationName,$title,$text")
                 }
-                /**
-                 * Ignore:
-                 *
-                 * Translate:
-                 * messaging - SMS
-                 * aib - Alior
-                 * gm - Gmail
-                 * tablica - OLX
-                 *
-                 */
-
-                bluetoothWrapper.write(applicationName)
             }
         }
     }

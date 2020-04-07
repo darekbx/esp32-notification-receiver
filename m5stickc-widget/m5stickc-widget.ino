@@ -27,6 +27,7 @@ void setup() {
   
 
   M5.Axp.ScreenBreath(8);
+  M5.Lcd.setRotation(3);
 }
 
 void loop() {
@@ -40,11 +41,11 @@ void loop() {
     resetNotification();
   }
   
-  delay(150);
+  delay(100);
 }
 
 void resetNotification() {
-  M5.Lcd.fillRect(0, batteryLevelOffset, 80, 160, BLACK);
+  M5.Lcd.fillRect(0, batteryLevelOffset + 1, 160, 80, BLACK);
 }
 
 void handleInputData(String data) {
@@ -54,6 +55,34 @@ void handleInputData(String data) {
     digitalWrite(M5_LED, HIGH);
     delay(200);
   }
-  M5.Lcd.setCursor(1, 20, 1);
-  M5.Lcd.print(data);  
+  
+  if (data.indexOf(',') == -1) {
+    M5.Lcd.setCursor(1, 20, 4);
+    M5.Lcd.print(data);  
+  } else {
+    int first = data.indexOf(',');
+    String application = data.substring(0, first);
+    int second = data.indexOf(',', first + 1);
+
+    String title = "";
+    String subTitle = "";
+
+    if (second == -1) {
+        title = data.substring(first + 1);
+    } else {
+        title = data.substring(first + 1, second);
+        subTitle = data.substring(second + 1);
+    }
+        
+    M5.Lcd.setCursor(1, 20, 4);
+    M5.Lcd.print(application);
+    
+    M5.Lcd.setCursor(1, 42, 2);
+    M5.Lcd.print(title);
+
+    if (subTitle.length() > 0) {
+      M5.Lcd.setCursor(1, 58, 2);
+      M5.Lcd.print(subTitle);
+    }
+  }
 }
