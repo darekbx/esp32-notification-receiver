@@ -1,21 +1,19 @@
 package com.darekbx.m5stickwidget.ui
 
-import android.content.ComponentName
-import android.content.Intent
+import android.app.NotificationManager
+import android.content.*
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.darekbx.m5stickwidget.M5WidgetApplication
 import com.darekbx.m5stickwidget.NotificationService
 import com.darekbx.m5stickwidget.R
 import com.darekbx.m5stickwidget.utils.PermissionsHelper
-import com.darekbx.m5stickwidget.viewmodel.BLEViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
@@ -24,7 +22,6 @@ class MainActivity : AppCompatActivity() {
      * TODO:
      *  - from activity select device to connect
      *  - add messages about missing notification permissions
-     *  - parse different notitifications
      *
      */
 
@@ -33,8 +30,21 @@ class MainActivity : AppCompatActivity() {
          * Value from secured Settings.Secure.ENABLED_NOTIFICATION_LISTENERS
          */
         val ENABLED_NOTIFICATION_LISTENERS = "enabled_notification_listeners"
+        val ACTION_STATUS = "action_status"
+        val STATUS_KEY = "status_key"
 
         val NOTIFICATION_PERMISSION_RESULT_CODE = 100
+    }
+
+    var communicationBroadcast = object : BroadcastReceiver() {
+
+        override fun onReceive(context: Context?, intent: Intent?) {
+            intent?.let {
+                when (it.action) {
+                    ACTION_STATUS -> updateStatus(intent.getBooleanExtra(STATUS_KEY, false))
+                }
+            }
+        }
     }
 
     @Inject
@@ -42,30 +52,36 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    internal lateinit var bleViewModel: BLEViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         (application as M5WidgetApplication).appComponent.inject(this)
 
-        bleViewModel = ViewModelProvider(this, viewModelFactory)[BLEViewModel::class.java]
-        bleViewModel.receivedNewData.observe(this@MainActivity, Observer { data ->
-            Log.v("------------", "Received new data: ${data}")
-        })
-        bleViewModel.writeStatus.observe(this@MainActivity, Observer { status ->
-            Log.v("------------", "Write status: ${status.name}")
-        })
-        bleViewModel.deviceStatus.observe(this@MainActivity, Observer { status ->
-
-            Log.v("------------", "Device status; ${status.name}")
-        })
-
         restart.setOnClickListener {
             sendBroadcast(Intent(NotificationService.ACTION_RESET))
+            animateButtonTap()
         }
 
         checkBLESupport()
+
+        val isNotificationVisible = notificationManager.activeNotifications.size == 1
+        updateStatus(isNotificationVisible)
+    }
+
+    private fun animateButtonTap() {
+        restart.animate().scaleX(1.1F).scaleY(1.1F).setDuration(150).withEndAction {
+            restart.animate().scaleX(1.0F).scaleY(1.0F).setDuration(100)
+        }
+    }
+
+    private fun updateStatus(isConnected: Boolean) {
+        val statusMessage = when (isConnected) {
+            true -> R.string.status_connected
+            else -> R.string.status_disconnected
+        }
+        status_text.isEnabled = isConnected
+        status_text.setText(statusMessage)
     }
 
     fun isNotificationPermissionRequired(): Boolean {
@@ -91,6 +107,17 @@ class MainActivity : AppCompatActivity() {
         } else {
             handlePermissions()
         }
+
+        registerReceiver(communicationBroadcast, IntentFilter(ACTION_STATUS))
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        try {
+            unregisterReceiver(communicationBroadcast)
+        } catch (e: IllegalStateException) {
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -105,7 +132,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startScan() {
-      //  bleViewModel.connectToDevice("M5StickC Widget")
+
     }
 
     private fun checkBLESupport() {
@@ -126,4 +153,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun PackageManager.missingSystemFeature(name: String): Boolean = !hasSystemFeature(name)
+
+    private val notificationManager by lazy {
+        getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    }
 }

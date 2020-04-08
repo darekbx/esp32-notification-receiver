@@ -3,4 +3,6 @@
     <string name="ble_not_supported">Bluetooth LE is not supported for this device.</string>
     <string name="permissions_are_required">Please grant all required permissions.</string>
     <string name="widget_is_active">M5StickC is connected</string>
+    <string name="status_connected">Connected</string>
+    <string name="status_disconnected">Disconnected</string>
 </resources>

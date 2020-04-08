@@ -11,6 +11,7 @@ import android.service.notification.StatusBarNotification
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.darekbx.m5stickwidget.bluetooth.BluetoothWrapper
+import com.darekbx.m5stickwidget.ui.MainActivity
 import java.lang.IllegalStateException
 import javax.inject.Inject
 
@@ -24,14 +25,16 @@ class NotificationService : NotificationListenerService() {
             "com.darekbx.m5stickwidget",
             "com.google.android.packageinstaller",
             "com.android.providers.downloads",
-            "com.brave.browser"
+            "com.brave.browser",
+            "android"
         )
         val TRANSLATIONS = mapOf(
             "messaging" to "SMS",
             "aib" to "Alior Bank",
             "gm" to "Gmail",
             "tablica" to "OLX",
-            "calendar" to "Calendar"
+            "calendar" to "Calendar",
+            "inmobile" to "InPost"
         )
     }
 
@@ -52,7 +55,6 @@ class NotificationService : NotificationListenerService() {
     }
 
     fun resetBluetooth() {
-        Log.v("------------", "Reset")
         removeActiveNotification()
         bluetoothWrapper.dispose()
         bluetoothWrapper.connectToDevice("M5StickC Widget")
@@ -83,6 +85,10 @@ class NotificationService : NotificationListenerService() {
                 true -> createActiveNotification()
                 false -> removeActiveNotification()
             }
+
+            sendBroadcast(Intent(MainActivity.ACTION_STATUS).apply {
+                putExtra(MainActivity.STATUS_KEY, isConnected)
+            })
         }
 
         bluetoothWrapper.connectToDevice("M5StickC Widget")

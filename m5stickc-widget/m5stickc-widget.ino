@@ -41,6 +41,11 @@ void loop() {
     resetNotification();
   }
   
+  if (digitalRead(BUTTON_B_PIN) == LOW) {
+    ESP.restart();
+  }
+  
+  
   delay(100);
 }
 
@@ -55,6 +60,7 @@ void handleInputData(String data) {
     digitalWrite(M5_LED, HIGH);
     delay(200);
   }
+  resetNotification();
   
   if (data.indexOf(',') == -1) {
     M5.Lcd.setCursor(1, 20, 4);
@@ -78,6 +84,9 @@ void handleInputData(String data) {
     M5.Lcd.print(application);
     
     M5.Lcd.setCursor(1, 42, 2);
+    if (title.length() > 20) {
+      title = title.substring(0, 20) + "...";
+    }
     M5.Lcd.print(title);
 
     if (subTitle.length() > 0) {

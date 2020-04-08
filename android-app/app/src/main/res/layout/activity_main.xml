@@ -6,14 +6,59 @@
     android:layout_height="match_parent"
     tools:context="com.darekbx.m5stickwidget.ui.MainActivity">
 
-    <Button
-        android:id="@+id/restart"
-        android:layout_width="wrap_content"
+    <androidx.cardview.widget.CardView
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Restart"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="32dp"
+        app:cardElevation="2dp">
+    <TextView
+        android:id="@+id/device_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:gravity="center_horizontal"
+        android:layout_margin="8dp"
+        android:text="M5StickC Widget"
+        />
+    </androidx.cardview.widget.CardView>
+
+    <ImageButton
+        android:id="@+id/restart"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/bg_round_reset"
+        android:src="@drawable/ic_refresh"
+        android:elevation="5dp"
+        />
+
+    <TextView
+        android:id="@+id/status_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:enabled="false"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/bg_status"
+        android:textColor="#fff"
+        android:textSize="16sp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:drawableLeft="@drawable/ic_bluetooth"
+        android:drawablePadding="8dp"
+        tools:text="Connected"
+        android:elevation="5dp"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
