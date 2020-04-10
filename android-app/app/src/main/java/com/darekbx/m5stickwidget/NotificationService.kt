@@ -34,7 +34,9 @@ class NotificationService : NotificationListenerService() {
             "gm" to "Gmail",
             "tablica" to "OLX",
             "calendar" to "Calendar",
-            "inmobile" to "InPost"
+            "inmobile" to "InPost",
+            "dialer" to "Dialer",
+            "gms" to "Google Play"
         )
     }
 

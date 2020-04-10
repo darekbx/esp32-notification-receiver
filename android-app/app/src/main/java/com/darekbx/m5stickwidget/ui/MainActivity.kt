@@ -18,13 +18,6 @@ import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
-    /**
-     * TODO:
-     *  - from activity select device to connect
-     *  - add messages about missing notification permissions
-     *
-     */
-
     companion object {
         /**
          * Value from secured Settings.Secure.ENABLED_NOTIFICATION_LISTENERS
