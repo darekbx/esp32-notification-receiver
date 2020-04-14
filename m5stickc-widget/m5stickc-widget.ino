@@ -49,6 +49,16 @@ void loop() {
   delay(100);
 }
 
+void setConnected() {
+  M5.Lcd.fillCircle(150, 7, 4, GREEN);
+  M5.Lcd.drawCircle(150, 7, 5, WHITE);
+}
+
+void setDisconnected() {
+  M5.Lcd.fillCircle(150, 7, 4, RED);
+  M5.Lcd.drawCircle(150, 7, 5, WHITE);
+}
+
 void resetNotification() {
   M5.Lcd.fillRect(0, batteryLevelOffset + 1, 160, 80, BLACK);
 }
