@@ -60,17 +60,19 @@ void setDisconnected() {
 }
 
 void resetNotification() {
+  digitalWrite(M5_LED, HIGH);
   M5.Lcd.fillRect(0, batteryLevelOffset + 1, 160, 80, BLACK);
 }
 
 void handleInputData(String data) {
-  for (int i = 0; i < 4; i++){
+  for (int i = 0; i < 6; i++){
     digitalWrite(M5_LED, LOW);
     delay(200);
     digitalWrite(M5_LED, HIGH);
     delay(200);
   }
   resetNotification();
+  digitalWrite(M5_LED, LOW);
   
   if (data.indexOf(',') == -1) {
     M5.Lcd.setCursor(1, 20, 4);

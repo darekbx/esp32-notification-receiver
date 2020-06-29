@@ -15,7 +15,8 @@ import com.darekbx.m5stickwidget.ui.MainActivity
 import java.lang.IllegalStateException
 import javax.inject.Inject
 
-class NotificationService : NotificationListenerService() {
+class
+NotificationService : NotificationListenerService() {
 
     companion object {
         val NOTIFICATION_CHANNEL_ID = "m5_notification_channel"
