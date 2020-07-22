@@ -5,6 +5,8 @@
 #include <BLEUtils.h>
 #include <BLE2902.h>
 
+from esp32 import *
+
 int batteryLevelOffset = 12;
 
 static uint16_t color16(uint16_t r, uint16_t g, uint16_t b) {

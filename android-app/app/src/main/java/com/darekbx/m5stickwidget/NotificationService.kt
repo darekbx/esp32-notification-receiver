@@ -27,7 +27,8 @@ NotificationService : NotificationListenerService() {
             "com.google.android.packageinstaller",
             "com.android.providers.downloads",
             "com.brave.browser",
-            "android"
+            "android",
+            "com.android.vending"
         )
         val TRANSLATIONS = mapOf(
             "messaging" to "SMS",
@@ -69,12 +70,9 @@ NotificationService : NotificationListenerService() {
 
         registerReceiver(communicationBroadcast, IntentFilter(ACTION_RESET))
 
-        bluetoothWrapper.writeStatus = {
-            Log.v("------------", "Write status: ${it.name}")
-        }
+        bluetoothWrapper.writeStatus = { }
 
         bluetoothWrapper.deviceStatus = {
-            Log.v("------------", "Device status: ${it.name}")
 
             isConnected = when (it) {
                 BluetoothWrapper.DeviceStatus.CONNECTED -> true
@@ -123,7 +121,6 @@ NotificationService : NotificationListenerService() {
         val packangeChunks = statusBarNotification.packageName.split(".")
         val packageName = packangeChunks.lastOrNull()
         packageName?.let { packageName ->
-
             Log.v("------------", "packageName: ${statusBarNotification.packageName}")
             if (!IGNORED_PACKAGES.contains(statusBarNotification.packageName)) {
                 val applicationName = TRANSLATIONS.get(packageName) ?: packageName
